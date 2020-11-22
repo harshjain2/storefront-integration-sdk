@@ -3,13 +3,14 @@
 const elasticsearch = require('elasticsearch');
 const fs = require('fs');
 const client = new elasticsearch.Client({
-   hosts: [ 'http://localhost:9200'],
-   apiVersion: '5.6'
+   hosts: [ 'https://search-squarefeet-xxxxx.ap-south-1.es.amazonaws.com/'],
+   apiVersion: '7.4'
 });
 
 const fileName = process.argv[2]
 const entityType = process.argv[3]
-const indexName = process.argv[4]
+let indexName = process.argv[4]
+indexName = indexName + '_' + entityType
 
 if (!fileName || !entityType) {
     console.error('Please run `node import.js [fileName] [product|attribute|category] [indexName]')
@@ -21,7 +22,6 @@ for (const record of records) {
     client.index({
         index: indexName,
         id: record.id,
-        type: entityType,
         body: record
     }, function(err, resp, status) {
         console.log(resp);
